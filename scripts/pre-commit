@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Frontend checks
+frontend_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^frontend/.*\.(ts|tsx|js|jsx|json)$')
+if [ -n "$frontend_files" ]; then
+    echo "Running frontend checks..."
+    cd frontend
+    
+    # Run ESLint
+    echo "Running ESLint..."
+    pnpm lint
+    if [ $? -ne 0 ]; then
+        echo "ESLint found issues. Commit aborted."
+        exit 1
+    fi
+    
+    # Run Prettier check
+    echo "Checking Prettier formatting..."
+    pnpm prettier --check "src/**/*.{ts,tsx,js,jsx,json,css}"
+    if [ $? -ne 0 ]; then
+        echo "Prettier formatting issues found. Run 'pnpm format' to fix. Commit aborted."
+        exit 1
+    fi
+    
+    cd ..
+fi
+
+echo "Completed!!"
+
+exit 0

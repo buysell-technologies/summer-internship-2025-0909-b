@@ -1,0 +1,4 @@
+CREATE DATABASE "api";
+
+\c api
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

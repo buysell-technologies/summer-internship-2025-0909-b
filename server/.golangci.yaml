@@ -1,0 +1,21 @@
+version: 2.0
+# https://golangci-lint.run/usage/configuration/#config-file
+run:
+  go: '1.24'
+  timeout: 3m
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gocyclo
+    - gosec
+    - bodyclose
+    - goconst
+    - nestif
+    - nlreturn
+    - predeclared

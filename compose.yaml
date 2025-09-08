@@ -1,0 +1,74 @@
+services:
+  pgsql:
+    container_name: pgsql
+    image: postgres:13
+    ports:
+      - '15432:5432'
+    volumes:
+      - ./docker/postgresql/init:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    command: ["postgres", "-c", "timezone=Asia/Tokyo"]
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U postgres -d api
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    networks:
+      - api-network
+
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: docker/go/Dockerfile
+    tty: true
+    restart: always
+    command: sh ./bin/api.sh
+    ports:
+      - '${API_PORT:-1234}:1234'
+    depends_on:
+      pgsql:
+        condition: service_healthy
+    volumes:
+      - type: bind
+        source: ./server
+        target: /go/src/server
+      - type: volume
+        source: go-modules-api
+        target: /go/pkg/mod
+    healthcheck:
+      test: 'curl -f localhost:1234/healthcheck || exit 1'
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    environment:
+      PORT: ${API_PORT:-1234}
+      DB_HOST: pgsql
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: api
+      DB_PORT: 5432
+      ENV: local
+      TZ: Asia/Tokyo
+    networks:
+      - api-network
+
+  setup-pre-commit:
+    container_name: setup-pre-commit
+    image: alpine:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: cp ./scripts/pre-commit .git/hooks/pre-commit
+
+volumes:
+  db-data:
+  go-modules-api:
+
+networks:
+  api-network:
+    external: true

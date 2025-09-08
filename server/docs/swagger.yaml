@@ -1,0 +1,1010 @@
+basePath: /v1
+definitions:
+  github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.CreateCustomerRequest:
+    properties:
+      address:
+        example: 東京都千代田区丸の内1-1-1
+        maxLength: 255
+        minLength: 1
+        type: string
+      email:
+        example: taro_tanaka@example.com
+        type: string
+      name:
+        example: 田中 太郎
+        maxLength: 255
+        minLength: 1
+        type: string
+      phone_number:
+        example: "09012345678"
+        type: string
+      tenant_id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+    required:
+    - address
+    - email
+    - name
+    - phone_number
+    - tenant_id
+    type: object
+  github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.CreateOrderRequest:
+    properties:
+      customer_id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      delivery_date:
+        example: "2022-01-01"
+        type: string
+      quantity:
+        example: 1
+        minimum: 0
+        type: integer
+      status:
+        description: nolint:lll
+        enum:
+        - PENDING
+        - SHIPPED
+        - DELIVERED
+        - CANCELLED
+        example: PENDING
+        type: string
+      stock_id:
+        example: 1
+        type: integer
+      total_amount:
+        example: 100000
+        minimum: 0
+        type: integer
+    required:
+    - customer_id
+    - delivery_date
+    - stock_id
+    type: object
+  github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.CreateStockRequest:
+    properties:
+      name:
+        example: LOUIS VUITTON M41524 ブラウン モノグラム ハンドバッグ
+        maxLength: 255
+        minLength: 1
+        type: string
+      price:
+        example: 100000
+        minimum: 0
+        type: integer
+      quantity:
+        example: 1
+        minimum: 0
+        type: integer
+      store_id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      user_id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+    required:
+    - name
+    - price
+    - quantity
+    - store_id
+    - user_id
+    type: object
+  github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.CreateUserRequest:
+    properties:
+      email:
+        example: taro_tanaka@example.com
+        type: string
+      employee_number:
+        example: "0000000000"
+        maxLength: 10
+        minLength: 1
+        type: string
+      gender:
+        enum:
+        - male
+        - female
+        example: male
+        type: string
+      name:
+        example: 田中 太郎
+        maxLength: 255
+        minLength: 1
+        type: string
+      store_id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+    required:
+    - email
+    - employee_number
+    - name
+    - store_id
+    type: object
+  github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.UpdateCustomerRequest:
+    properties:
+      address:
+        example: 東京都千代田区丸の内1-1-1
+        maxLength: 255
+        minLength: 1
+        type: string
+      email:
+        example: taro_tanaka@example.com
+        type: string
+      name:
+        example: 田中 太郎
+        maxLength: 255
+        minLength: 1
+        type: string
+      phone_number:
+        example: "09012345678"
+        type: string
+      tenant_id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+    required:
+    - address
+    - email
+    - name
+    - phone_number
+    - tenant_id
+    type: object
+  github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.UpdateOrderRequest:
+    properties:
+      delivery_date:
+        example: "2022-01-01"
+        type: string
+      quantity:
+        example: 1
+        minimum: 0
+        type: integer
+      status:
+        description: nolint:lll
+        enum:
+        - PENDING
+        - SHIPPED
+        - DELIVERED
+        - CANCELLED
+        example: PENDING
+        type: string
+      tenant_id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      total_amount:
+        example: 100000
+        minimum: 0
+        type: integer
+    required:
+    - delivery_date
+    - tenant_id
+    type: object
+  github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.UpdateStockRequest:
+    properties:
+      name:
+        example: LOUIS VUITTON M41524 ブラウン モノグラム ハンドバッグ
+        maxLength: 255
+        minLength: 1
+        type: string
+      price:
+        example: 100000
+        type: integer
+      quantity:
+        example: 1
+        type: integer
+      store_id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      user_id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+    required:
+    - name
+    - price
+    - quantity
+    - store_id
+    - user_id
+    type: object
+  github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.UpdateUserRequest:
+    properties:
+      email:
+        example: taro_tanaka@example.com
+        type: string
+      employee_number:
+        example: "0000000000"
+        maxLength: 10
+        minLength: 1
+        type: string
+      gender:
+        enum:
+        - male
+        - female
+        example: male
+        type: string
+      name:
+        example: 田中 太郎
+        maxLength: 255
+        minLength: 1
+        type: string
+      store_id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+    required:
+    - email
+    - employee_number
+    - name
+    - store_id
+    type: object
+  model.Customer:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        example: "2023-01-01T00:00:00Z"
+        format: date-time
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      orders:
+        description: リレーション (hasMany)
+        items:
+          $ref: '#/definitions/model.Order'
+        type: array
+      phone_number:
+        type: string
+      tenant_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.Order:
+    properties:
+      created_at:
+        type: string
+      customer_id:
+        type: string
+      delivery_date:
+        type: string
+      id:
+        type: integer
+      quantity:
+        type: integer
+      status:
+        $ref: '#/definitions/model.OrderStatus'
+      stock_id:
+        type: integer
+      total_amount:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  model.OrderStatus:
+    enum:
+    - PENDING
+    - SHIPPED
+    - DELIVERED
+    - CANCELLED
+    type: string
+    x-enum-comments:
+      StatusCancelled: キャンセル
+      StatusDelivered: 納品済み
+      StatusPending: 保留中
+      StatusShipped: 出荷済み
+    x-enum-varnames:
+    - StatusPending
+    - StatusShipped
+    - StatusDelivered
+    - StatusCancelled
+  model.Stock:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      orders:
+        description: リレーション (hasMany)
+        items:
+          $ref: '#/definitions/model.Order'
+        type: array
+      price:
+        type: integer
+      quantity:
+        type: integer
+      store_id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  model.User:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        example: "2023-01-01T00:00:00Z"
+        format: date-time
+        type: string
+      email:
+        type: string
+      employee_number:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      stocks:
+        description: リレーション (hasMany)
+        items:
+          $ref: '#/definitions/model.Stock'
+        type: array
+      store_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  request.CreateBulkOrderRequest:
+    properties:
+      orders:
+        items:
+          $ref: '#/definitions/github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.CreateOrderRequest'
+        type: array
+    required:
+    - orders
+    type: object
+  request.CreateBulkStockRequest:
+    properties:
+      stocks:
+        items:
+          $ref: '#/definitions/github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.CreateStockRequest'
+        type: array
+    required:
+    - stocks
+    type: object
+host: localhost:1234
+info:
+  contact: {}
+  description: This is the API for the Summer Internship 2024 Backend.
+  title: Summer Internship 2024 Backend API
+  version: "1"
+paths:
+  /customers:
+    get:
+      description: 顧客一覧の取得
+      parameters:
+      - description: 取得件数
+        example: 10
+        in: query
+        minimum: 0
+        name: limit
+        type: integer
+      - description: 取得開始位置
+        example: 0
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Customer'
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 顧客一覧の取得
+    post:
+      consumes:
+      - application/json
+      description: 顧客の作成
+      parameters:
+      - description: 作成条件
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.CreateCustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 顧客の作成
+  /customers/{id}:
+    delete:
+      description: 顧客の削除
+      parameters:
+      - description: 顧客ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 顧客の削除
+    get:
+      description: 顧客の取得
+      parameters:
+      - description: 顧客ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Customer'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 顧客の取得
+    put:
+      consumes:
+      - application/json
+      description: 顧客の更新
+      parameters:
+      - description: 顧客ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 更新条件
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.UpdateCustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Customer'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 顧客の更新
+  /health:
+    get:
+      description: ヘルスチェック
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: ヘルスチェック
+  /orders:
+    get:
+      description: 発注一覧の取得
+      parameters:
+      - description: 取得件数
+        example: 10
+        in: query
+        minimum: 0
+        name: limit
+        type: integer
+      - description: 取得開始位置
+        example: 0
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Order'
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 発注一覧の取得
+    post:
+      consumes:
+      - application/json
+      description: 発注の作成
+      parameters:
+      - description: 作成条件
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 発注の作成
+  /orders/{id}:
+    get:
+      description: 発注の取得
+      parameters:
+      - description: 発注ID
+        in: path
+        minimum: 1
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Order'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 発注の取得
+    put:
+      consumes:
+      - application/json
+      description: 発注の更新
+      parameters:
+      - description: 発注ID
+        in: path
+        minimum: 1
+        name: id
+        required: true
+        type: integer
+      - description: 更新条件
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.UpdateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Order'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 発注の更新
+  /orders/bulk:
+    post:
+      consumes:
+      - application/json
+      description: 発注の一括作成
+      parameters:
+      - description: 作成条件
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateBulkOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              type: integer
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 発注の一括作成
+  /stocks:
+    get:
+      description: 在庫一覧の取得
+      parameters:
+      - description: 取得件数
+        example: 10
+        in: query
+        minimum: 0
+        name: limit
+        type: integer
+      - description: 取得開始位置
+        example: 0
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Stock'
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 在庫一覧の取得
+    post:
+      consumes:
+      - application/json
+      description: 在庫の作成
+      parameters:
+      - description: 在庫情報
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.CreateStockRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 在庫の作成
+  /stocks/{id}:
+    delete:
+      description: 在庫の削除
+      parameters:
+      - description: 在庫ID
+        in: path
+        minimum: 1
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 在庫の削除
+    get:
+      description: 在庫の取得
+      parameters:
+      - description: 在庫ID
+        in: path
+        minimum: 1
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Stock'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 在庫の取得
+    put:
+      consumes:
+      - application/json
+      description: 在庫の更新
+      parameters:
+      - description: 在庫ID
+        in: path
+        minimum: 1
+        name: id
+        required: true
+        type: integer
+      - description: 在庫情報
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.UpdateStockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Stock'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 在庫の更新
+  /stocks/bulk:
+    post:
+      consumes:
+      - application/json
+      description: 在庫の一括作成
+      parameters:
+      - description: 在庫情報
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateBulkStockRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              type: integer
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 在庫の一括作成
+  /users:
+    get:
+      description: 従業員一覧の取得
+      parameters:
+      - description: 取得件数
+        example: 10
+        in: query
+        minimum: 0
+        name: limit
+        type: integer
+      - description: 取得開始位置
+        example: 0
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.User'
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 従業員一覧の取得
+    post:
+      description: 従業員の作成
+      parameters:
+      - description: 作成条件
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 従業員の作成
+  /users/{id}:
+    delete:
+      description: 従業員の削除
+      parameters:
+      - description: 従業員ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 従業員の削除
+    get:
+      description: 従業員の取得
+      parameters:
+      - description: 従業員ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 従業員の取得
+    put:
+      consumes:
+      - application/json
+      description: 従業員の更新
+      parameters:
+      - description: 従業員ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 更新条件
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_buysell-technologies_summer-internship-2024-backend_api_handler_request.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 従業員の更新
+schemes:
+- http
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
