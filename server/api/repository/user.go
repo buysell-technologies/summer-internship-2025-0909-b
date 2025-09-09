@@ -11,6 +11,7 @@ func (r *repository) GetUsers(ctx context.Context, tenantID string, limit, offse
 	users := []*model.User{}
 
 	if err := r.db.Unscoped().
+		Preload("Stocks").
 		Joins("LEFT JOIN stores AS s ON users.store_id = s.id").
 		Where("s.tenant_id = ?", tenantID).
 		Limit(limit).
@@ -18,13 +19,6 @@ func (r *repository) GetUsers(ctx context.Context, tenantID string, limit, offse
 		Find(&users).
 		Error; err != nil {
 		return nil, err
-	}
-
-	for i, user := range users {
-		stocks := []*model.Stock{}
-		if err := r.db.Where("user_id = ?", user.ID).Find(&stocks).Error; err == nil {
-			users[i].Stocks = stocks
-		}
 	}
 
 	return users, nil
