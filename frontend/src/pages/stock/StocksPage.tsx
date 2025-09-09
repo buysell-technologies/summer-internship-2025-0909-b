@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useGetStocks } from '../../api/generated/api';
 import StockTable from '../../features/stock/components/StockTable';
 import {
@@ -8,6 +8,7 @@ import {
   Typography,
   Button,
 } from '@mui/material';
+import { convertCSVFromArray } from '../../utils/convertCSVFromArray';
 
 const StocksPage = () => {
   const [page, setPage] = useState(0);
@@ -17,6 +18,43 @@ const StocksPage = () => {
     limit: rowsPerPage,
     offset: page * rowsPerPage,
   });
+
+  const [isExporting, setIsExporting] = useState(false);
+
+  const exportableRows = useMemo(() => {
+    const stocks = data || [];
+    return stocks.map((s) => ({
+      id: s.id,
+      name: s.name,
+      price: s.price,
+      quantity: s.quantity,
+      created_at: s.created_at,
+      updated_at: s.updated_at,
+    }));
+  }, [data]);
+
+  const exportStocksCsv = async () => {
+    try {
+      setIsExporting(true);
+      if (!exportableRows.length) {
+        return;
+      }
+      const csv = convertCSVFromArray(exportableRows);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const now = new Date();
+      const ts = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+      link.setAttribute('download', `stocks_${ts}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
@@ -81,11 +119,37 @@ const StocksPage = () => {
           在庫管理
         </Typography>
       </Box>
-      <Box
-        sx={{
-          p: 3,
-        }}
-      >
+      <Box sx={{ p: 3 }}>
+        {/* 検索・フィルタUIとCSV出力ボタンの行 */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 2,
+            mb: 2.5,
+            alignItems: { xs: 'stretch', sm: 'center' },
+            justifyContent: 'space-between',
+          }}
+        >
+          {/* 左側: 検索・フィルタUI用プレースホルダー（既存UIが入る想定） */}
+          <Box sx={{ flex: 1, minHeight: 0 }} />
+
+          {/* 右側: CSV出力ボタン */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={exportStocksCsv}
+              disabled={isExporting}
+              sx={{
+                minWidth: { xs: '100%', sm: 140 },
+                fontWeight: 600,
+              }}
+            >
+              {isExporting ? '出力中…' : 'CSV出力'}
+            </Button>
+          </Box>
+        </Box>
         <StockTable
           stocks={data || []}
           page={page}
