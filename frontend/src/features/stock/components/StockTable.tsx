@@ -80,14 +80,14 @@ const StockTable = ({
     } else if (isTablet) {
       return {
         id: '6%',
-        name: '24%',
+        name: '22%',
         sku: '12%',
         price: '14%',
         quantity: '10%',
-        updatedBy: '10%',
+        updatedBy: '9%',
         created: '12%',
-        updated: '10%',
-        actions: '12%',
+        updated: '9%',
+        actions: '6%',
       } as const;
     } else {
       return {
@@ -254,7 +254,7 @@ const StockTable = ({
                 columnWidths={columnWidths}
                 isMobile={isMobile}
               />
-              <TableCell align="right" sx={{ pr: 0 }}>
+              <TableCell align="right" sx={{ pr: 0, width: raw.actions }}>
                 <Box sx={{ display: 'inline-flex', ml: 'auto', gap: 0.5 }}>
                   <Tooltip title="編集">
                     <IconButton size="small" onClick={() => onEdit?.(stock)}>
