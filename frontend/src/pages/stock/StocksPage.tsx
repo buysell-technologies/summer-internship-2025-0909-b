@@ -26,7 +26,10 @@ const StocksPage = () => {
     const stocks = data || [];
     const formatPrice = (price?: number) => {
       if (price === undefined || price === null) return '';
-      return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(price);
+      return new Intl.NumberFormat('ja-JP', {
+        style: 'currency',
+        currency: 'JPY',
+      }).format(price);
     };
     const formatDate = (iso?: string) => {
       if (!iso) return '';
