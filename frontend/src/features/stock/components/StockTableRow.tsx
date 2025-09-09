@@ -2,13 +2,20 @@ import { TableRow, TableCell } from '@mui/material';
 import type { ModelStock } from '../../../api/generated/model';
 import { useI18n } from '../../../providers/I18nProvider';
 
+type StockWithOptionalExtras = ModelStock & {
+  sku?: string;
+  updated_by?: string;
+};
+
 interface StockTableRowProps {
-  stock: ModelStock;
+  stock: StockWithOptionalExtras;
   columnWidths: {
     id: string;
     name: string;
+    sku: string;
     price: string;
     quantity: string;
+    updatedBy: string;
     created: string;
     updated: string;
   };
@@ -66,6 +73,21 @@ const StockTableRow = ({
       >
         {stock.name || '-'}
       </TableCell>
+      {!isMobile && (
+        <TableCell
+          sx={{
+            width: columnWidths.sku,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            py: 1.5,
+            fontSize: '0.875rem',
+            color: '#666',
+          }}
+        >
+          {stock.sku || '-'}
+        </TableCell>
+      )}
       <TableCell
         align="right"
         sx={{
@@ -92,6 +114,21 @@ const StockTableRow = ({
       >
         {stock.quantity || 0}
       </TableCell>
+      {!isMobile && (
+        <TableCell
+          sx={{
+            width: columnWidths.updatedBy,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            py: 1.5,
+            fontSize: '0.875rem',
+            color: '#666',
+          }}
+        >
+          {stock.updated_by || '-'}
+        </TableCell>
+      )}
       {!isMobile && (
         <TableCell
           sx={{
