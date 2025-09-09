@@ -1,4 +1,4 @@
-import { TableRow, TableCell } from '@mui/material';
+import { TableCell } from '@mui/material';
 import type { ModelStock } from '../../../api/generated/model';
 import { useI18n } from '../../../providers/I18nProvider';
 
@@ -38,17 +38,7 @@ const StockTableRow = ({
   };
 
   return (
-    <TableRow
-      hover
-      sx={{
-        '&:hover': {
-          backgroundColor: '#f8f9fa',
-        },
-        '&:nth-of-type(even)': {
-          backgroundColor: '#fbfbfb',
-        },
-      }}
-    >
+    <>
       <TableCell
         sx={{
           width: columnWidths.id,
@@ -157,7 +147,7 @@ const StockTableRow = ({
       >
         {formatDate(stock.updated_at) || '-'}
       </TableCell>
-    </TableRow>
+    </>
   );
 };
 
