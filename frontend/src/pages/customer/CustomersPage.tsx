@@ -31,15 +31,23 @@ const CustomersPage = () => {
   const [page, setPage] = useState(0);
 
   const [rowsPerPage, setRowsPerPage] = useState<number>(() => {
-    const stored = localStorage.getItem(CUSTOMER_PAGE_SETTINGS_STORAGE_KEY)!;
-    const parsed = JSON.parse(stored) as CustomerPageSettings;
-    if (
-      typeof parsed.rowsPerPage === 'number' &&
-      VALID_PAGE_SIZES.includes(parsed.rowsPerPage as ValidPageSize)
-    ) {
-      return parsed.rowsPerPage;
+    try {
+      const stored = localStorage.getItem(CUSTOMER_PAGE_SETTINGS_STORAGE_KEY);
+      if (!stored) {
+        return DEFAULT_SETTINGS.rowsPerPage;
+      }
+      const parsed = JSON.parse(stored) as CustomerPageSettings;
+      if (
+        typeof parsed.rowsPerPage === 'number' &&
+        VALID_PAGE_SIZES.includes(parsed.rowsPerPage as ValidPageSize)
+      ) {
+        return parsed.rowsPerPage;
+      }
+      return DEFAULT_SETTINGS.rowsPerPage;
+    } catch (error) {
+      console.error('Failed to parse customer page settings:', error);
+      return DEFAULT_SETTINGS.rowsPerPage;
     }
-    return DEFAULT_SETTINGS.rowsPerPage;
   });
 
   const { data, isLoading, error, refetch } = useGetCustomers({
@@ -48,14 +56,18 @@ const CustomersPage = () => {
   });
 
   useEffect(() => {
-    const settings: CustomerPageSettings = {
-      rowsPerPage,
-      lastUpdated: new Date().toISOString(),
-    };
-    localStorage.setItem(
-      CUSTOMER_PAGE_SETTINGS_STORAGE_KEY,
-      JSON.stringify(settings),
-    );
+    try {
+      const settings: CustomerPageSettings = {
+        rowsPerPage,
+        lastUpdated: new Date().toISOString(),
+      };
+      localStorage.setItem(
+        CUSTOMER_PAGE_SETTINGS_STORAGE_KEY,
+        JSON.stringify(settings),
+      );
+    } catch (error) {
+      console.error('Failed to save customer page settings:', error);
+    }
   }, [rowsPerPage]);
 
   const handleChangePage = (_event: unknown, newPage: number) => {
