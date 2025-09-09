@@ -7,8 +7,13 @@ import {
   Box,
   Typography,
   Button,
+  Snackbar,
 } from '@mui/material';
 import { convertCSVFromArray } from '../../utils/convertCSVFromArray';
+import CreateStockDialog from '../../features/stock/components/CreateStockDialog';
+import EditStockDialog from '../../features/stock/components/EditStockDialog';
+import DeleteConfirmDialog from '../../features/stock/components/DeleteConfirmDialog';
+import type { ModelStock } from '../../api/generated/model';
 
 const StocksPage = () => {
   const [page, setPage] = useState(0);
@@ -91,6 +96,42 @@ const StocksPage = () => {
     setPage(0);
   };
 
+  // Dialog states
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [editTarget, setEditTarget] = useState<ModelStock | null>(null);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<ModelStock | null>(null);
+
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: 'success' | 'error';
+  }>({ open: false, message: '', severity: 'success' });
+
+  const handleCreateSuccess = () => {
+    setSnackbar({
+      open: true,
+      message: '商品を登録しました',
+      severity: 'success',
+    });
+    refetch();
+  };
+
+  const handleEditSuccess = () => {
+    setSnackbar({
+      open: true,
+      message: '商品を更新しました',
+      severity: 'success',
+    });
+    refetch();
+  };
+
+  const handleDeleteSuccess = () => {
+    setSnackbar({ open: true, message: '削除しました', severity: 'success' });
+    refetch();
+  };
+
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -128,6 +169,10 @@ const StocksPage = () => {
           borderBottom: '1px solid #e0e0e0',
           backgroundColor: '#fafafa',
           flexShrink: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 2,
         }}
       >
         <Typography
@@ -142,6 +187,9 @@ const StocksPage = () => {
         >
           在庫管理
         </Typography>
+        <Button variant="contained" onClick={() => setOpenCreate(true)}>
+          新規登録
+        </Button>
       </Box>
       <Box sx={{ p: 3 }}>
         {/* 検索・フィルタUIとCSV出力ボタンの行 */}
@@ -155,20 +203,14 @@ const StocksPage = () => {
             justifyContent: 'space-between',
           }}
         >
-          {/* 左側: 検索・フィルタUI用プレースホルダー（既存UIが入る想定） */}
           <Box sx={{ flex: 1, minHeight: 0 }} />
-
-          {/* 右側: CSV出力ボタン */}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
             <Button
-              variant="contained"
-              color="primary"
+              variant="outlined"
+              color="inherit"
               onClick={exportStocksCsv}
               disabled={isExporting}
-              sx={{
-                minWidth: { xs: '100%', sm: 140 },
-                fontWeight: 600,
-              }}
+              sx={{ minWidth: { xs: '100%', sm: 140 }, fontWeight: 600 }}
             >
               {isExporting ? '出力中…' : 'CSV出力'}
             </Button>
@@ -185,8 +227,42 @@ const StocksPage = () => {
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          onEdit={(s) => {
+            setEditTarget(s);
+            setOpenEdit(true);
+          }}
+          onDelete={(s) => {
+            setDeleteTarget(s);
+            setOpenDelete(true);
+          }}
         />
       </Box>
+
+      <CreateStockDialog
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
+        onSuccess={handleCreateSuccess}
+      />
+      <EditStockDialog
+        open={openEdit}
+        stock={editTarget}
+        onClose={() => setOpenEdit(false)}
+        onSuccess={handleEditSuccess}
+      />
+      <DeleteConfirmDialog
+        open={openDelete}
+        stockId={deleteTarget ? Number(deleteTarget.id) : null}
+        stockName={deleteTarget?.name}
+        onClose={() => setOpenDelete(false)}
+        onSuccess={handleDeleteSuccess}
+      />
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
+        message={snackbar.message}
+      />
     </Box>
   );
 };

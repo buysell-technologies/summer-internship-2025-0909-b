@@ -11,7 +11,11 @@ import {
   Typography,
   useTheme,
   useMediaQuery,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import type { ModelStock } from '../../../api/generated/model';
 import StockTableRow from './StockTableRow';
 
@@ -21,7 +25,20 @@ interface StockTableProps {
   rowsPerPage: number;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onEdit?: (stock: ModelStock) => void;
+  onDelete?: (stock: ModelStock) => void;
 }
+
+type ColumnWidths = {
+  id: string;
+  name: string;
+  sku: string;
+  price: string;
+  quantity: string;
+  updatedBy: string;
+  created: string;
+  updated: string;
+};
 
 const StockTable = ({
   stocks,
@@ -29,6 +46,8 @@ const StockTable = ({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
+  onEdit,
+  onDelete,
 }: StockTableProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -38,45 +57,64 @@ const StockTable = ({
     return (
       <Box sx={{ textAlign: 'center', py: 4 }}>
         <Typography variant="body1" color="text.secondary">
-          在庫データがありません
+          該当する商品がありません。条件を変更してください。
         </Typography>
       </Box>
     );
   }
 
   // レスポンシブなカラム幅設定
-  const getColumnWidths = () => {
+  const getRawColumnWidths = () => {
     if (isMobile) {
       return {
-        id: '10%',
-        name: '35%',
+        id: '8%',
+        name: '32%',
+        sku: '0%',
         price: '20%',
         quantity: '15%',
+        updatedBy: '0%',
         created: '0%', // モバイルでは非表示
-        updated: '20%',
-      };
+        updated: '17%',
+        actions: '8%',
+      } as const;
     } else if (isTablet) {
       return {
-        id: '8%',
-        name: '30%',
-        price: '18%',
-        quantity: '12%',
-        created: '16%',
-        updated: '16%',
-      };
+        id: '6%',
+        name: '24%',
+        sku: '12%',
+        price: '14%',
+        quantity: '10%',
+        updatedBy: '10%',
+        created: '12%',
+        updated: '10%',
+        actions: '12%',
+      } as const;
     } else {
       return {
-        id: '8%',
-        name: '25%',
-        price: '15%',
+        id: '6%',
+        name: '22%',
+        sku: '12%',
+        price: '12%',
         quantity: '10%',
-        created: '21%',
-        updated: '21%',
-      };
+        updatedBy: '10%',
+        created: '12%',
+        updated: '10%',
+        actions: '6%',
+      } as const;
     }
   };
 
-  const columnWidths = getColumnWidths();
+  const raw = getRawColumnWidths();
+  const columnWidths: ColumnWidths = {
+    id: raw.id,
+    name: raw.name,
+    sku: raw.sku,
+    price: raw.price,
+    quantity: raw.quantity,
+    updatedBy: raw.updatedBy,
+    created: raw.created,
+    updated: raw.updated,
+  };
 
   return (
     <TableContainer
@@ -93,7 +131,7 @@ const StockTable = ({
           <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
             <TableCell
               sx={{
-                width: columnWidths.id,
+                width: raw.id,
                 fontWeight: 600,
                 fontSize: '0.875rem',
                 py: 2,
@@ -104,7 +142,7 @@ const StockTable = ({
             </TableCell>
             <TableCell
               sx={{
-                width: columnWidths.name,
+                width: raw.name,
                 fontWeight: 600,
                 fontSize: '0.875rem',
                 py: 2,
@@ -113,10 +151,23 @@ const StockTable = ({
             >
               商品名
             </TableCell>
+            {!isMobile && (
+              <TableCell
+                sx={{
+                  width: raw.sku,
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  py: 2,
+                  color: '#555',
+                }}
+              >
+                SKU
+              </TableCell>
+            )}
             <TableCell
               align="right"
               sx={{
-                width: columnWidths.price,
+                width: raw.price,
                 fontWeight: 600,
                 fontSize: '0.875rem',
                 py: 2,
@@ -128,7 +179,7 @@ const StockTable = ({
             <TableCell
               align="right"
               sx={{
-                width: columnWidths.quantity,
+                width: raw.quantity,
                 fontWeight: 600,
                 fontSize: '0.875rem',
                 py: 2,
@@ -140,7 +191,20 @@ const StockTable = ({
             {!isMobile && (
               <TableCell
                 sx={{
-                  width: columnWidths.created,
+                  width: raw.updatedBy,
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  py: 2,
+                  color: '#555',
+                }}
+              >
+                更新者
+              </TableCell>
+            )}
+            {!isMobile && (
+              <TableCell
+                sx={{
+                  width: raw.created,
                   fontWeight: 600,
                   fontSize: '0.875rem',
                   py: 2,
@@ -152,7 +216,7 @@ const StockTable = ({
             )}
             <TableCell
               sx={{
-                width: columnWidths.updated,
+                width: raw.updated,
                 fontWeight: 600,
                 fontSize: '0.875rem',
                 py: 2,
@@ -161,16 +225,54 @@ const StockTable = ({
             >
               更新日時
             </TableCell>
+            <TableCell
+              sx={{
+                width: raw.actions,
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                py: 2,
+                color: '#555',
+              }}
+              align="right"
+            >
+              操作
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {stocks.map((stock) => (
-            <StockTableRow
+            <TableRow
               key={stock.id}
-              stock={stock}
-              columnWidths={columnWidths}
-              isMobile={isMobile}
-            />
+              hover
+              sx={{
+                '&:hover': { backgroundColor: '#f8f9fa' },
+                '&:nth-of-type(even)': { backgroundColor: '#fbfbfb' },
+              }}
+            >
+              <StockTableRow
+                stock={stock}
+                columnWidths={columnWidths}
+                isMobile={isMobile}
+              />
+              <TableCell align="right" sx={{ pr: 0 }}>
+                <Box sx={{ display: 'inline-flex', ml: 'auto', gap: 0.5 }}>
+                  <Tooltip title="編集">
+                    <IconButton size="small" onClick={() => onEdit?.(stock)}>
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="削除">
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => onDelete?.(stock)}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              </TableCell>
+            </TableRow>
           ))}
         </TableBody>
       </Table>
@@ -184,9 +286,7 @@ const StockTable = ({
         onRowsPerPageChange={onRowsPerPageChange}
         labelRowsPerPage="表示件数:"
         labelDisplayedRows={({ from, to }) => `${from}-${to}`}
-        sx={{
-          borderTop: '1px solid #e0e0e0',
-        }}
+        sx={{ borderTop: '1px solid #e0e0e0' }}
       />
     </TableContainer>
   );

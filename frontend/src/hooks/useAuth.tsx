@@ -19,6 +19,7 @@ interface JWTPayload {
 interface AuthContextType {
   token: string | null;
   userId: string | null;
+  storeId: string | null;
   login: (token: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
@@ -53,19 +54,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     navigate({ to: '/login' });
   }, [navigate]);
 
-  const userId = useMemo(() => {
-    if (!token) return null;
+  const { userId, storeId } = useMemo(() => {
+    if (!token) return { userId: null, storeId: null };
     try {
       const decoded = jwtDecode<JWTPayload>(token);
-      return decoded.sub;
+      return { userId: decoded.sub, storeId: decoded.store_id };
     } catch {
-      return null;
+      return { userId: null, storeId: null };
     }
   }, [token]);
 
   const value = {
     token,
     userId,
+    storeId,
     login,
     logout,
     isAuthenticated: !!token,
